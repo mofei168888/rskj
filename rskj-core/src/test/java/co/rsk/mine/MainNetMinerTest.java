@@ -78,6 +78,7 @@ public class MainNetMinerTest {
 
         EthereumImpl ethereumImpl = Mockito.mock(EthereumImpl.class);
 
+        MinerClock clock = new MinerClock(blockchain, config);
         MinerServer minerServer = new MinerServerImpl(
                 config,
                 ethereumImpl,
@@ -86,6 +87,7 @@ public class MainNetMinerTest {
                 DIFFICULTY_CALCULATOR,
                 new ProofOfWorkRule(config).setFallbackMiningEnabled(false),
                 blockToMineBuilder(),
+                clock,
                 ConfigUtils.getDefaultMiningConfig()
         );
         try {
@@ -172,6 +174,7 @@ public class MainNetMinerTest {
         EthereumImpl ethereumImpl = Mockito.mock(EthereumImpl.class);
         Mockito.when(ethereumImpl.addNewMinedBlock(Mockito.any())).thenReturn(ImportResult.IMPORTED_BEST);
 
+        MinerClock clock = new MinerClock(blockchain, config);
         MinerServer minerServer = new MinerServerImpl(
                 tempConfig,
                 ethereumImpl,
@@ -180,6 +183,7 @@ public class MainNetMinerTest {
                 DIFFICULTY_CALCULATOR,
                 new ProofOfWorkRule(tempConfig).setFallbackMiningEnabled(true),
                 blockToMineBuilder(),
+                clock,
                 ConfigUtils.getDefaultMiningConfig()
         );
         try {
@@ -244,6 +248,7 @@ public class MainNetMinerTest {
         EthereumImpl ethereumImpl = Mockito.mock(EthereumImpl.class);
         Mockito.when(ethereumImpl.addNewMinedBlock(Mockito.any())).thenReturn(ImportResult.IMPORTED_BEST);
 
+        MinerClock clock = new MinerClock(blockchain, config);
         MinerServer minerServer = new MinerServerImpl(
                 config,
                 ethereumImpl,
@@ -252,6 +257,7 @@ public class MainNetMinerTest {
                 DIFFICULTY_CALCULATOR,
                 new ProofOfWorkRule(config).setFallbackMiningEnabled(false),
                 blockToMineBuilder(),
+                clock,
                 ConfigUtils.getDefaultMiningConfig()
         );
         try {
@@ -302,6 +308,7 @@ public class MainNetMinerTest {
     private BlockToMineBuilder blockToMineBuilder() {
         BlockUnclesValidationRule unclesValidationRule = Mockito.mock(BlockUnclesValidationRule.class);
         Mockito.when(unclesValidationRule.isValid(Mockito.any())).thenReturn(true);
+        MinerClock clock = new MinerClock(blockchain, config);
         return new BlockToMineBuilder(
                 ConfigUtils.getDefaultMiningConfig(),
                 repository,
@@ -311,7 +318,8 @@ public class MainNetMinerTest {
                 new GasLimitCalculator(config),
                 unclesValidationRule,
                 config,
-                null
+                null,
+                clock
         );
     }
 }
